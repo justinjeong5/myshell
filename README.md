@@ -1,56 +1,50 @@
+# myshell 
 
-[프로젝트 개요](#프로젝트-개요)  
-1. [프로젝트 개요](#1프로젝트-개요)  
-   1. [목표](#11목표)
-   2. [기능](#12기능)  
-      1. [cd](#121cdchange-directory)
-      2. [exit](#122exit)
-      3. [background 실행](#123background-실행)
-      4. [signal handler](#124시그널-처리)
-      5. [redirection](#125redirection)
-      6. [pipe](#126pipe)
-   3. [한계와 문제점](#13한계와-문제점)
-2. [기능](#2기능)
-   1. [cd](#21cd--change-directory)
-   2. [exit](#22exit)
-   3. [background 실행](#23background-실행)
-   4. [signal handler](#24시그널-핸들링)
-   5. [redirection](#25redirection)
-   6. [pipe](#26pipe)
-3. [프로젝트의 한계와 문제점](#3한계와-문제점)
-   1. [cd](#31cd)
-   2. [exit](#32exit)
-   3. [background 실행](#33background-실행)
-   4. [signal handler](#34시그널-핸들링)
-4. [고찰](#4고찰)
-   1. [좀비 프로세스가 생기는 이유는 무엇인가?](#41좀비-프로세스가-생기는-이유는-무엇인가)
-   2. [5번 테스트의 문제점이 무엇인지 지적하고 해결하기 위한 방법을 제시하라](#425번-테스트의-문제점이-무엇인지-지적하고-해결하기-위한-방법을-제시하라)
-5. [프로젝트 실행 결과](#5실행-결과)
-   1. [cd](#51cd)
-   2. [exit](#52exit)
-   3. [background & foreground](#53background--foreground)
-   4. [background & foreground 구현 이후에 다음을 테스트](#54background--foreground-구현-이후에-다음을-테스트)
-   5. [백그라운드를 기다리는 문제](#55백그라운드-기다리는-문제-테스트)
-   6. [SIGCHLD로 자식 프로세스 wait()시 foreground 프로세스가 온전하게 수행되는가](#56sigchld로-자식-프로세스-wait시-포그라운드-프로세스가-온전하게-수행되는-테스트)
-   7. [^C ^\ 무시](#57c--무시)
-   8. [foreground 프로세스 ^C](#58포그라운드-프로세스-c-확인)
-   9. [Redirection](#59redirection)
-   10. [Pipe](#510pipe)
-   11. [redirection background](#511redirection-background)
-6.  [전체 소스 코드](#6전체-소스-코드)
+*myshell ver3.0*  
 
+- [myshell](#myshell)
+  - [1.프로젝트 개요](#1프로젝트-개요)
+    - [1.1	목표](#11목표)
+    - [1.2	기능](#12기능)
+      - [1.2.1	cd(change directory)](#121cdchange-directory)
+      - [1.2.2	exit](#122exit)
+      - [1.2.3	background 실행](#123background-실행)
+      - [1.2.4	시그널 처리](#124시그널-처리)
+      - [1.2.5	Redirection](#125redirection)
+      - [1.2.6	Pipe](#126pipe)
+    - [1.3	한계와 문제점](#13한계와-문제점)
+  - [2.	기능](#2기능)
+    - [2.1	cd : change directory](#21cd--change-directory)
+    - [2.2	exit](#22exit)
+    - [2.3	background 실행](#23background-실행)
+    - [2.4	시그널 핸들링](#24시그널-핸들링)
+    - [2.5	Redirection](#25redirection)
+    - [2.6	Pipe](#26pipe)
+  - [3.	한계와 문제점](#3한계와-문제점)
+    - [3.1	cd](#31cd)
+    - [3.2	exit](#32exit)
+    - [3.3	background 실행](#33background-실행)
+    - [3.4	시그널 핸들링](#34시그널-핸들링)
+  - [4.	고찰](#4고찰)
+    - [4.1	좀비 프로세스가 생기는 이유는 무엇인가?](#41좀비-프로세스가-생기는-이유는-무엇인가)
+    - [4.2	5번 테스트의 문제점이 무엇인지 지적하고 해결하기 위한 방법을 제시하라](#425번-테스트의-문제점이-무엇인지-지적하고-해결하기-위한-방법을-제시하라)
+  - [5. myshell	실행 결과](#5-myshell실행-결과)
+    - [5.1	Cd](#51cd)
+    - [5.2	Exit](#52exit)
+    - [5.3	background & foreground](#53background--foreground)
+    - [5.4	background & foreground 구현 이후에 다음을 테스트](#54background--foreground-구현-이후에-다음을-테스트)
+    - [5.5	백그라운드 기다리는 문제 테스트](#55백그라운드-기다리는-문제-테스트)
+    - [5.6	SIGCHLD로 자식 프로세스 wait()시 포그라운드 프로세스가 온전하게 수행되는 테스트](#56sigchld로-자식-프로세스-wait시-포그라운드-프로세스가-온전하게-수행되는-테스트)
+    - [5.7	^C ^\ 무시](#57c--무시)
+    - [5.8	포그라운드 프로세스 ^C 확인](#58포그라운드-프로세스-c-확인)
+    - [5.9	Redirection](#59redirection)
+    - [5.10	Pipe](#510pipe)
+    - [5.11	redirection background](#511redirection-background)
+  - [6.	전체 소스 코드](#6전체-소스-코드)
 
-# myshell
-
-**myshell ver3.0**  
-12164720 정경하  
-컴퓨터공학과  
-Justin.jeong5@gmail.com  
-
-## 프로젝트 개요
  
-### 1.프로젝트 개요
-#### 1.1	목표  
+## 1.프로젝트 개요
+### 1.1	목표  
 유닉스의 쉘은 유닉스 운영체제와 유닉스 계통의 시스템을 위한 사용자 인터페이스이다. 쉘을 통해 사용자는 시스템을 원하는 대로 명령하고 제어할 수 있다. 명령과 제어는 커널과 사용자가 소통하기 위해 만들어진 system call을 이용하여 수행된다  
 
 <img width="215" alt="그림1" src="https://user-images.githubusercontent.com/44011462/86112695-48450400-bb03-11ea-93a8-e9a5b004a579.png">
@@ -60,33 +54,33 @@ Justin.jeong5@gmail.com
 
 위와 같은 특징을 가지는 UNIX의 운영체제, 즉 kernel과 사용자가 “소통”하기 위한 방법이 system call이며, 이 system call을 사용자가 편하게 쓸 수 있도록 해주는 여러 방법 중 하나가 shell이다. 이미 shell에는 bash, csh, ksh, sh, tcsh등의 여러가지가 있다. 이번 프로젝트는 직접 shell을 만들고 필요한 기능을 직접 만들어보면서 system call과 UNIX의 동작에 대해서 자세하게 이해해 보는 것이 프로젝트 Myshell의 목표이다.  
 
-#### 1.2	기능  
+### 1.2	기능  
 
-##### 1.2.1	cd(change directory)  
+#### 1.2.1	cd(change directory)  
 유닉스 파일 시스템은 direcrory와 File을 계층적인 트리 구조로 나타낸다. 파일 이름들의 창고와 같은 역할을 하는 directory는 중첩 될 수 있으며 다른 대부분의 운영체제에서 이용하고 있는 개념이다. 프로세스는 현재 작업 중인 directory라는 개념을 가지고 있는데 이 현재 작업중인 directory(current working directory)를 바꾸는 명령이다.  
   
-##### 1.2.2	exit  
+#### 1.2.2	exit  
 
 exit는 프로세스를 종료시키는 명령이다. 종료를 하려는 시점에서 자식프로세스가 있는지, 부모프로세스가 있는지 등의 상황을 고려하여 프로그램을 작성해야 좀비 프로세스가 system의 자원을 쓸데 없이 점유하는 상황을 피할 수 있다
 
-##### 1.2.3	background 실행  
+#### 1.2.3	background 실행  
 1.2.2에서 언급한 좀비 프로세스의 개념에는 고아프로세스라는 개념이 있다. 이 개념은 부모프로세스가 자식프로세스를 만들고 난 뒤, 자식 프로세스의 종료 상황을 부모 프로세스가 인지하지 못하여 자식이 종료되지 않는 상황을 이용하는 것이다. 이 개념을 이용하면 부모 프로세스와 상관없이 background에서 자식프로세스가 실행하는 “background 실행”을 구현할 수 있다.  
 
-##### 1.2.4	시그널 처리
+#### 1.2.4	시그널 처리
 일반적으로 쉘은 ^C(SIGINT), ^ \(SIGQUIT)의 명령을 받아도 종료되지 않는다. 이런 기능을 myshell에도 추가하려면 ^C(SIGINT), ^ \(SIGQUIT)에 대한 signal을 받으면 무시하도록 구현해야한다. Signal.h 헤더파일에는 해당 동작을 쉽게 쓸 수 있도록 system call을 제공한다. 이를 이용하면 ^C(SIGINT), ^ \(SIGQUIT)뿐만 아니라 다른 여러 수십가지 시그널에 대한 핸들링 동작을 할 수 있다.
-##### 1.2.5	Redirection
+#### 1.2.5	Redirection
   쉘에서 표준 출력으로 출력을 하면 일반적으로 모니터에 출력하고, 표준 입력으로 입력하면 키보드로 입력을 받는다. 이런 입력 방식은 개발자가 원하는 대로 변경 할 수 있는데, 출력을 모니터가 아닌 다른 파일로, 또는 입력을 키보드가 아닌 파일로부터 입력을 받으면 이것을 입출력 redirection이라고 한다.
-##### 1.2.6	Pipe
+#### 1.2.6	Pipe
 각각의 프로세스는 입력을 받아 출력물을 만들어 낸다. 어느 프로세스의 출력물이 다른 어느 하나의 프로세스의 입력으로 사용된다면 바로 출력과 입력을 이어주는 기능이 pipe이다. 이를 이용하면 서로 다른 여러 프로세스를 마치 하나인 것처럼 유기적으로 동작하게 할 수 있어서 매우 강력한 기능이다. 파이프는 | 기호를 사용하며 실행파일과 실행파일을 이어주는 역할을 한다.
 
   
-#### 1.3	한계와 문제점
+### 1.3	한계와 문제점
   이번 과제에 해당하는 기능의 구현은 완성했다. 다만 프로그램이 최적의 상황을 유지하며 동작하고 있는지에 대한 확신은 부족하다. 구체적인 예를 들면 백그라운드에서 실행되는 프로세스를 만드는 방법으로 고아 프로세스를 만드는 개념을 이용하였다. 이 부분에서 init 프로세스로 입양된 자식 프로세스가 exec를 실시하면 프로그램의 실행 내용을 터미널 프롬프트에 출력하는 예외 상황이 발생했다. 이를 막기 위해서 자식 프로세스의 표준 입출력에 해당하는 0, 1, 2번 파일 디스크립터를 close하는 방식을 이용했다. Test Case를 실행 했을 때는 원하는 결과가 나왔지만 실행해보지 않은 test case가 모두 실행 될지는 확신이 없다.
 프로젝트 기능
  
 
-### 2.	기능 
-#### 2.1	cd : change directory
+## 2.	기능 
+### 2.1	cd : change directory
 ```c
 int cmd_cd(int argc, char *argv[]) //cd : change directory
 {
@@ -102,7 +96,7 @@ int cmd_cd(int argc, char *argv[]) //cd : change directory
 }
 ```
 
-#### 2.2	exit
+### 2.2	exit
 ```c
 int cmd_exit(int argc, char *argv[]) //myshell 종료
 {
@@ -111,7 +105,7 @@ int cmd_exit(int argc, char *argv[]) //myshell 종료
 }
 ```
 
-#### 2.3	background 실행
+### 2.3	background 실행
 ```c
 int parse_background(char *cmd)
 {
@@ -126,7 +120,7 @@ int parse_background(char *cmd)
 }
 ```
 
-#### 2.4	시그널 핸들링
+### 2.4	시그널 핸들링
 ```c
 sigset_t set;
 
@@ -147,7 +141,7 @@ void zombie_handler(int sig)
 }
 ```
 
-#### 2.5	Redirection
+### 2.5	Redirection
 ```c
 void parse_redirect(char *cmd)
 {
@@ -178,7 +172,7 @@ void parse_redirect(char *cmd)
   }
 }
 ```
-#### 2.6	Pipe
+### 2.6	Pipe
 ```c
 if ((count = makeargv(cmdgrp, "|", cmdlist, MAX_CMD_LIST)) <= 0) //cmd 파싱을 
 실패한 경우 헤당 에러 메세지 출력 후 종료
@@ -202,26 +196,24 @@ if ((count = makeargv(cmdgrp, "|", cmdlist, MAX_CMD_LIST)) <= 0) //cmd 파싱을
   }
   execute_cmd(cmdlist[i]);
 ```
- 
-## 프로젝트 한계와 문제점
- 
-### 3.	한계와 문제점
-#### 3.1	cd
+  
+## 3.	한계와 문제점
+### 3.1	cd
 
 처음에는 execvp를 수행한 자식 프로세스가 chdir system calld을 수행하도록 코드를 구현했으나 제대로 된 결과를 얻을 수 없었다. 이유는 pwd는 부모 프로세스를 기준으로 커멘드에 뜨게 되는데, 자식이 directory를 변경하여도 exec를 통해 자식 프로세스는 이미 다른 프로그램이 되었기 때문에 부모의 directory를 변경할 수 없었다. 때문에 cd명령은 부모 프로세스가 실행하며, 아무 일도 하지 않고 생겼다가 없어지는 자식 프로세스는 UNIX의 자원만 사용하기 때문에 자식을 만드는 fork()를 수행하지 않도록 코드를 구성했다.
 
-#### 3.2	exit	
+### 3.2	exit	
 cd를 구현하면서 겪었던 비슷한 문제를 마주했다. Exit명령을 받으면 ./myshell을 종료해야 하기 때문에 자식을 만드는 일은 불필요하다. 따라서 fork()되기 전에 프로세스에게 exit(0)명령을 주어 프로그램을 종료하게 만들었다.
 
-#### 3.3	background 실행
+### 3.3	background 실행
 background에서 프로그램이 수행되는 것은 부모 프로세스로부터 떨어져 나와야 한다는 것을 이해하는게 중요했다. 이를 구현하기 위해서 command line에서 & 명령을 받으면 parsing을 통해 이를 인지하여 변수에 기록해 두었다. 이 기록을 가지고 부모 프로세스가 자식프로세스의 종료를 기다리지 않도록 했다. 다시 말하면, 부모 프로세스가 waitpid()를 수행하지 않도록 하는 동시에 자식프로세스는 execvp를 수행하도록 했다. 이렇게 되면 자식프로세스가 수행이 되고, 부모는 자식을 기다리지 않으므로 다른 명령을 받을 준비를 할 수 있다. 동시에 자식이 종료되면 execvp를 통한 종료이기 때문에 return이 없게 되어 zombie프로세스로 남지 않게 된다. 또한  background에서 실행중인 자식프로세스가 표준 입출력을 실행하여 프롬프트에서 읽거나 쓰는 일을 막기 위해 표준 입출력에 해당하는 0, 1, 2번 file descriptor를 close하였다. 
 
-#### 3.4	시그널 핸들링
+### 3.4	시그널 핸들링
 시그널을 핸들링하는 방식은 특정 시그널이 들어왔을 때 수행할 동작을 미리 정해 두어 원하는 결과를 얻는 방식으로 작동한다. 이미 만들어진 system call을 이용하면 간단하게 구현가능했기 때문에 특별한 문제점이나 한계점은 인식하지 못했다. 
  
-### 4.	고찰
+## 4.	고찰
 
-#### 4.1	좀비 프로세스가 생기는 이유는 무엇인가?  
+### 4.1	좀비 프로세스가 생기는 이유는 무엇인가?  
     mysh> id (자신의 uid확인)  
     uid=12345(s222222) gid=300(Assist)  
     mysh> ps -u 12345 & (본인의 uid적을것)  
@@ -236,7 +228,7 @@ background에서 프로그램이 수행되는 것은 부모 프로세스로부�
 
 앞서 구현한 기능으로 위 명령을 수행하면 좀비프로세스가 만들어 질 수 있다.  이는 &명령을 받았을 때 하는 행동의 결과에 따라 좀비프로세스가 될 수도 있고, 정상적으로 종료될 수도 있다. 테스트해본 결과 앞서 구현한 기능으로 위 명령을 수행하면 좀비 프로세스가 만들어지지 않는다. 이유는 자식 프로세스가 execvp를 수행하면서 0, 1, 2번 file descriptor를 close했기 때문에 프롬프트에 자식의 수행결과가 나오지 않으면서 execvp가 정상적으로 끝나면 아무것도 반환하지 않고 종료되기 때문에 zombie 프로세스가 되지 않는다. 만약 자식 프로세스가 Exec를 하지 않게 구현하면서 부모가 wait()을 하지 않으면 좀비 프로세스가 만들어진다.  
 
-#### 4.2	5번 테스트의 문제점이 무엇인지 지적하고 해결하기 위한 방법을 제시하라  
+### 4.2	5번 테스트의 문제점이 무엇인지 지적하고 해결하기 위한 방법을 제시하라  
     mysh> sleep 10 &  
     mysh> sleep 20 &  
     mysh> ps  
@@ -244,45 +236,42 @@ background에서 프로그램이 수행되는 것은 부모 프로세스로부�
 
 background를 기다리지 않고 바로 쉘 프롬프트가 출력된다. Background에서 수행되도록 하는 명령인 &를 입력했기 때문에 쉘 프롬프트가 바로 출력되어야 한다. 앞선 4.1번에서 설명한 것처럼 자식 프로세스가 정상적으로 background에서 수행된다면 5번 테스트는 문제없이 동작한다.
  
-## 프로젝트 실행 결과
-
-### 5.	실행 결과 
-#### 5.1	Cd 
+## 5. myshell	실행 결과 
+### 5.1	Cd 
  ![1번](https://user-images.githubusercontent.com/44011462/86113174-dfaa5700-bb03-11ea-8910-67fd88671ea2.gif)
 
-#### 5.2	Exit
+### 5.2	Exit
  ![2번](https://user-images.githubusercontent.com/44011462/86113191-e769fb80-bb03-11ea-9843-dc460bfe1bcf.gif)
 
-#### 5.3	background & foreground  
+### 5.3	background & foreground  
  ![3번](https://user-images.githubusercontent.com/44011462/86113192-e8029200-bb03-11ea-8ea5-687d8d3e6099.gif)
 
-#### 5.4	background & foreground 구현 이후에 다음을 테스트 
+### 5.4	background & foreground 구현 이후에 다음을 테스트 
   ![4번-min](https://user-images.githubusercontent.com/44011462/86114111-12a11a80-bb05-11ea-89de-88d2925aaf62.gif)
 
-#### 5.5	백그라운드 기다리는 문제 테스트
+### 5.5	백그라운드 기다리는 문제 테스트
  ![5번](https://user-images.githubusercontent.com/44011462/86113803-af16ed00-bb04-11ea-8611-0a7d7b0f89f6.gif)
 
-#### 5.6	SIGCHLD로 자식 프로세스 wait()시 포그라운드 프로세스가 온전하게 수행되는 테스트
+### 5.6	SIGCHLD로 자식 프로세스 wait()시 포그라운드 프로세스가 온전하게 수행되는 테스트
  
 ![6번-min](https://user-images.githubusercontent.com/44011462/86114152-2056a000-bb05-11ea-87e6-cccad2434c93.gif)
 
-#### 5.7	^C ^\ 무시 
+### 5.7	^C ^\ 무시 
  ![7번](https://user-images.githubusercontent.com/44011462/86113716-94447880-bb04-11ea-9ea4-748d20609de3.gif)
-#### 5.8	포그라운드 프로세스 ^C 확인
+### 5.8	포그라운드 프로세스 ^C 확인
   ![8번](https://user-images.githubusercontent.com/44011462/86113720-960e3c00-bb04-11ea-9a5e-ae15107be9eb.gif)
  
-#### 5.9	Redirection
+### 5.9	Redirection
  ![9번](https://user-images.githubusercontent.com/44011462/86113721-96a6d280-bb04-11ea-9260-6072f5921973.gif)
-#### 5.10	Pipe
+### 5.10	Pipe
  ![10번-min](https://user-images.githubusercontent.com/44011462/86114839-13867c00-bb06-11ea-9498-7bf819a08006.gif)
 
-#### 5.11	redirection background
+### 5.11	redirection background
  
 ![11번](https://user-images.githubusercontent.com/44011462/86113724-97d7ff80-bb04-11ea-88c2-e4dea007cc4f.gif)
- 
-## 프로젝트 전체 소스 코드
+
  
-### 6.	전체 소스 코드
+## 6.	전체 소스 코드
 ```c
 /*
  * 2019.11.18
