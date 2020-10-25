@@ -22,11 +22,6 @@ unix 환경
 ```
 
 ## 기능 목록
-- pwd
-```bash
-mysh> pwd
-```  
-
 - change directory(cd)
 ```bash
 mysh> pwd
