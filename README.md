@@ -5,7 +5,7 @@ Unix의 Kernel과 통신하기 위한 shell을 만든 프로젝트.
 ![10번-min](https://user-images.githubusercontent.com/44011462/86114839-13867c00-bb06-11ea-9498-7bf819a08006.gif)
  
 ## 사용법
-unix 환경
+
 ```bash
 ~$ sudo apt-get install build-essential
 
@@ -22,7 +22,7 @@ unix 환경
 ```
 
 ## 기능 목록
-- change directory(cd)
+- Change Directory
 ```bash
 mysh> pwd
 mysh> mkdir test
@@ -30,13 +30,13 @@ mysh> cd test
 mysh> pwd
 ```
 
-- background 실행
+- Background Execution
 ```bash
 mysh> sleep 10 &
 mysh> ps -l
 ```
 
-- 시그널 핸들링
+- Signal Handling
 ```bash
 mysh> sleep 10
 mysh> ^c
@@ -55,7 +55,7 @@ mysh> ls -l > ls.txt
 mysh> cat < ls.txt
 ```
 
-- exit
+- Exit
 ```bash
 mysh> exit
 ```
