@@ -22,9 +22,45 @@ unix 환경
 ```
 
 ## 기능 목록
+- pwd
+```bash
+mysh> pwd
+```  
+
 - change directory(cd)
-- exit
+```bash
+mysh> pwd
+mysh> mkdir test
+mysh> cd test
+mysh> pwd
+```
+
 - background 실행
+```bash
+mysh> sleep 10 &
+mysh> ps -l
+```
+
 - 시그널 핸들링
+```bash
+mysh> sleep 10
+mysh> ^c
+```
+
 - Redirection
+```bash
+mysh> cat > test.txt
+123^c
+mysh> cat < test.txt
+```
+
 - Pipe
+```bash
+mysh> ls -l > ls.txt
+mysh> cat < ls.txt
+```
+
+- exit
+```bash
+mysh> exit
+```
